@@ -1,0 +1,40 @@
+{
+    "compatibleVersion": 3,
+    "bundleVersion": 1,
+    "icon": "icon.png",
+    "commands": [
+        {
+            "name": "Import Colors to Document",
+            "identifier": "import-colors-to-document",
+            "script": "./import.js"
+        },
+        {
+            "name": "Import Colors to System Color Picker",
+            "identifier": "import-colors-to-system",
+            "script": "./import.js"
+        },
+        {
+            "name": "Import Colors as Library",
+            "identifier": "import-colors-as-library",
+            "script": "./import.js"
+        },
+        {
+            "name": "Export Document Colors",
+            "identifier": "export-document-colors",
+            "script": "./export.js"
+        }
+    ],
+    "menu": {
+        "title": "Import Colors",
+        "items": [
+            "import-colors-to-document",
+            "import-colors-to-system",
+            "import-colors-as-library",
+            "-",
+            "export-document-colors"
+        ]
+    },
+    "name": "Import Colors",
+    "identifier" : "com.ashung.hung.import-colors-sketch",
+    "homepage" : "https://github.com/Ashung/import-colors-sketch"
+}

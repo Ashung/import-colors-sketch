@@ -1,0 +1,35 @@
+{
+  "name": "import-colors",
+  "version": "0.1.0",
+  "description": "Import colors from swatches file to Sketch.",
+  "engines": {
+    "sketch": ">=3.0"
+  },
+  "skpm": {
+    "name": "import-colors",
+    "manifest": "src/manifest.json",
+    "main": "import-colors.sketchplugin",
+    "assets": [
+      "assets/**/*"
+    ]
+  },
+  "scripts": {
+    "build": "skpm-build",
+    "watch": "skpm-build --watch",
+    "start": "skpm-build --watch --run",
+    "postinstall": "npm run build && skpm-link"
+  },
+  "devDependencies": {
+    "@skpm/builder": "^0.5.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ashung/import-colors-sketch.git"
+  },
+  "author": "Ashung <ashung.hung@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@skpm/dialog": "^0.2.4",
+    "@skpm/fs": "^0.2.4"
+  }
+}
