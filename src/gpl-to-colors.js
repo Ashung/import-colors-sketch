@@ -11,7 +11,7 @@ import color from './color';
  */
 export default function(filePath) {
 
-    var colorContents = readFileSync(filePath, 'utf-8');
+    let colorContents = readFileSync(filePath, 'utf-8');
     let lines = colorContents.split(EOL);
 
     if (lines.length < 2 && lines[0] !== 'GIMP Palette') {

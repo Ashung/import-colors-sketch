@@ -1,5 +1,6 @@
-import { UI as ui } from 'sketch';
+import { UI } from 'sketch';
 import { Document, Artboard, ShapePath, Text, Rectangle, Library } from 'sketch/dom';
+import sketch from 'sketch/dom';
 import { extname, basename } from 'path';
 import os from 'os';
 import dialog from '@skpm/dialog';
@@ -36,10 +37,15 @@ export default function(context) {
         }
 
         let identifier = String(context.command.identifier());
-        if (identifier === 'import-colors-to-document') {
+        if (identifier === 'import-colors-to-document' || identifier === 'import-colors-to-global') {
 
             let document = Document.getSelectedDocument();
-            let colorAssets = document.colors;
+            let colorAssets;
+            if (identifier === 'import-colors-to-document') {
+                colorAssets = document.colors;
+            } else {
+                colorAssets = sketch.getGlobalColors();
+            }
 
             let doRemoveAllColorAssets = false;
             let doAddColorAssets = false;
@@ -58,7 +64,7 @@ export default function(context) {
                             doRemoveAllColorAssets = true;
                             doAddColorAssets = true;
                         } else if (response === 1) {
-                            return;
+                            return null;
                         } else if (response === 2) {
                             doAddColorAssets = true;
                         }
@@ -66,30 +72,50 @@ export default function(context) {
                 );
             }
 
+            let assetCollection;
             if (doRemoveAllColorAssets) {
-                let assetCollection = document._getMSDocumentData().assets();
+                if (identifier === 'import-colors-to-document') {
+                    assetCollection = document._getMSDocumentData().assets();
+                } else {
+                    assetCollection = MSPersistentAssetCollection.sharedGlobalAssets();
+                }
                 assetCollection.removeAllColorAssets();
             }
 
             if (doAddColorAssets) {
-                color.toObject(colors).items.forEach(item => {
-                    let newName = item.name.replace(/\sCopy(\s\d+)?/, '');
-                    colorAssets.push({
-                        name: newName,
-                        color: item.color
+                if (identifier === 'import-colors-to-document') {
+                    color.toObject(colors).items.forEach(item => {
+                        let newName = item.name.replace(/\sCopy(\s\d+)?/, '');
+                        colorAssets.push({
+                            name: newName,
+                            color: item.color
+                        });
                     });
-                });
-                ui.message('Colors have imported to document colors.');
+                    UI.message('Colors have imported to document colors.');
+                } else {
+                    color.toObject(colors).items.forEach(item => {
+                        let newName = item.name.replace(/\sCopy(\s\d+)?/, '');
+                        let colorAsset = color.colorAsset(newName, item.color);
+                        assetCollection.addColorAsset(colorAsset);
+                    });
+                    UI.message('Colors have imported to global colors.');
+                }
             }
 
         } 
         
-        else if (identifier === 'import-colors-to-system') {
-
-            let filePath = os.homedir() + '/Library/Colors/' + fileName.replace(/\.\w+$/i, '.clr');
-            colors.writeToFile(filePath);
-            ui.message('Colors have imported to system color picker, you need to restart Sketch to see it.');
-
+        else if (identifier === 'convert-colors-to-clr-file') {
+            dialog.showSaveDialog(
+                {
+                    filters: [
+                        { name: 'Apple Color Picker Palette', extensions: [ 'clr' ] }
+                    ]
+                },
+                (filePath) => {
+                    colors.writeToFile(filePath);
+                    UI.message('Colors have convert to .clr file.');
+                }
+            );
         }
 
         else if (identifier === 'import-colors-as-library') {
@@ -158,10 +184,10 @@ export default function(context) {
 
             document.save(libraryPath, error => {
                 if (error) {
-                    ui.message('Error: ' + error.message);
+                    UI.message('Error: ' + error.message);
                 } else {
                     Library.getLibraryForDocumentAtPath(libraryPath);
-                    ui.message('Colors have imported as a library.');
+                    UI.message('Colors have imported as a library.');
                 }
             });
 

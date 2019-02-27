@@ -165,6 +165,29 @@ export default {
     },
 
     /**
+     * @param  {String} name
+     * @param  {String} hexValue #ffffff, #ffffffff
+     * @returns {MSColorAsset}
+     */
+    colorAsset (name, hexValue) {
+        let mscolor = MSImmutableColor.colorWithSVGString(hexValue).newMutableCounterpart();
+        return MSColorAsset.alloc().initWithAsset_name(mscolor, name);
+    },
+
+    /**
+     * @param  {String} name
+     * @param  {Number} red 0..1
+     * @param  {Number} green 0..1
+     * @param  {Number} blue 0..1
+     * @param  {Number} alpha 0..1
+     * @returns {MSColorAsset}
+     */
+    colorAssetWithName_red_green_blue_alpha (name, red, green, blue, alpha) {
+        let mscolor = MSColor.colorWithRed_green_blue_alpha(red, green, blue, alpha);
+        return MSColorAsset.alloc().initWithAsset_name(mscolor, name);
+    },
+
+    /**
      * @param  {NSColorList} colorList
      * @returns {Object}
      */

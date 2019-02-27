@@ -1,4 +1,5 @@
-import { UI as ui } from 'sketch';
+import { UI } from 'sketch';
+import sketch from 'sketch/dom';
 import { basename } from 'path';
 import { Document } from 'sketch/dom';
 import dialog from '@skpm/dialog';
@@ -6,11 +7,19 @@ import color from './color';
 
 export default function(context) {
 
-    var document = Document.getSelectedDocument();
-    var colors = document.colors;
+    let document = Document.getSelectedDocument();
+    let colors;
+
+    let identifier = String(context.command.identifier());
+    if (identifier === 'export-document-colors') {
+        colors = document.colors;
+    }
+    if (identifier === 'export-global-colors') {
+        colors = sketch.getGlobalColors();
+    }
 
     if (colors.length === 0) {
-        ui.message('Document have no colors.');
+        UI.message('Document have no colors.');
         return;
     }
 
@@ -30,7 +39,7 @@ export default function(context) {
                 color.addColorToList(nscolor, name, colorList, keyCount);
             });
             colorList.writeToFile(filePath);
-            ui.message('Colors save to "' + filePath + '".');
+            UI.message('Colors save to "' + filePath + '".');
         }
     );
 

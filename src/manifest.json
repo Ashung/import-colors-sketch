@@ -9,8 +9,8 @@
             "script": "./import.js"
         },
         {
-            "name": "Import Colors to System Color Picker",
-            "identifier": "import-colors-to-system",
+            "name": "Import Colors to Global",
+            "identifier": "import-colors-to-global",
             "script": "./import.js"
         },
         {
@@ -19,19 +19,38 @@
             "script": "./import.js"
         },
         {
+            "name": "Convert Colors to .clr File",
+            "identifier": "convert-colors-to-clr-file",
+            "script": "./import.js"
+        },
+        {
             "name": "Export Document Colors",
             "identifier": "export-document-colors",
             "script": "./export.js"
+        },
+        {
+            "name": "Export Global Colors",
+            "identifier": "export-global-colors",
+            "script": "./export.js"
+        },
+        {
+            "name": "Reset Global Colors",
+            "identifier": "reset-global-colors",
+            "script": "./reset.js"
         }
     ],
     "menu": {
         "title": "Import Colors",
         "items": [
             "import-colors-to-document",
-            "import-colors-to-system",
+            "import-colors-to-global",
             "import-colors-as-library",
             "-",
-            "export-document-colors"
+            "export-document-colors",
+            "export-global-colors",
+            "convert-colors-to-clr-file",
+            "-",
+            "reset-global-colors"
         ]
     },
     "name": "Import Colors",
