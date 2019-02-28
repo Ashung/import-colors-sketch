@@ -1,26 +1,32 @@
 # Import Colors
 
-**For Sketch 53+** Import colors from swatches file to Sketch. 
+Import colors from swatches file to Sketch.  **(For Sketch 53+)** 
 
 ## Features
 
-- Import colors from swatches file to document color assets.
-- Import colors from swatches file to system color picker.
-- Import colors from swatches file, and create a library.
-- Export document color assets as .clr file.
+- Import Colors to Document / Global
+- Import Colors as Library
+- Export Document / Global Colors
+- Convert Colors to .clr File
+- Reset Global Colors
 
 ## Supported Formats
 
-| Name                       | Extension | Support Application        |
-| -------------------------- | --------- | -------------------------- |
-| Apple Color Picker Palette | `.clr`    | macOS Color Picker ^1^     |
-| Adobe Color Watch          | `.aco`    | Photoshop ^2^              |
-| Adobe Swatch Exchange      | `.ase`    | Photoshop, Illustrator ^2^ |
-| GIMP Palette               | `.gpl`    | GIMP, Inkscape             |
+| Name                       | Extension        | Support Application                 |
+| -------------------------- | ---------------- | ----------------------------------- |
+| Apple Color Picker Palette | `.clr`           | macOS Color Picker <sup>1</sup>     |
+| Adobe Color Watch          | `.aco`           | Photoshop <sup>2</sup>              |
+| Adobe Swatch Exchange      | `.ase`           | Photoshop, Illustrator <sup>2</sup> |
+| GIMP Palette               | `.gpl`           | GIMP, Inkscape                      |
+| Sketch Palette             | `.sketchpalette` | Sketch (old version)                |
+| Sketch Preset              | `.sketchpreset`  | Sketch <sup>3</sup>                 |
+| Sketch Document            | `.sketch`        | Sketch <sup>3</sup>                 |
 
 *1, In Sketch run "View" - "Show Colors", select palette tab, then click the gear icon, to open .clr files.*
 
 *2, The color save in CMYK, LAB, Grayscale model from .aco or .ase file, maybe have diffrent hex value between Sketch and Photoshop.*
+
+*3, Only import document colors.*
 
 ## License
 

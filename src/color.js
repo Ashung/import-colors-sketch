@@ -1,6 +1,14 @@
 export default {
 
     /**
+     * @param  {String} hexValue #[0-9A-F]{3,8}
+     * @returns {NSColor}
+     */
+    colorWithHex (hexValue) {
+        return MSImmutableColor.colorWithSVGString(hexValue).NSColorWithColorSpace(nil);
+    },
+
+    /**
      * @param  {Number} r 0..255
      * @param  {Number} g 0..255
      * @param  {Number} b 0..255
@@ -144,12 +152,31 @@ export default {
     },
 
     /**
+     * @param  {Array} colorsArray
+     * @returns  {NSColorList}
+     */
+    colorListFromArray (colorsArray) {
+        let colorList = NSColorList.alloc().initWithName(null);
+        let keyCount = {};
+        colorsArray.forEach(item => {
+            let nscolor = this.colorWithHex(item.color);
+            let colorName = item.name || this.toHexValue(nscolor);
+            this.addColorToList(nscolor, colorName, colorList, keyCount);
+        });
+        return colorList;
+    },
+
+    /**
      * @param  {NSColor} nscolor
-     * @returns {String}
+     * @returns {String} [0-9A-F]{6|8}
      */
     toHexValue (nscolor) {
         let color = MSColor.colorWithNSColor(nscolor);
-        return String(color.immutableModelObject().hexValue());
+        if (color.alphaComponent === 1) {
+            return '#' + String(color.immutableModelObject().hexValue());
+        } else {
+            return '#' + String(color.immutableModelObject().hexValue()) + this.floatToHex(nscolor.alphaComponent());
+        }
     },
 
     /**
@@ -189,21 +216,29 @@ export default {
 
     /**
      * @param  {NSColorList} colorList
-     * @returns {Object}
+     * @returns {Array}
      */
-    toObject (colorList) {
-        let colors = {
-            name: colorList.name(),
-            items: []
-        };
+    toArray (colorList) {
+        let colors = [];
         colorList.allKeys().forEach(key => {
             let nscolor = colorList.colorWithKey(key);
-            colors.items.push({
+            colors.push({
                 name: key,
-                color: '#' + String(this.toHexValue(nscolor)) + this.floatToHex(nscolor.alphaComponent()),
+                color: this.toHexValue(nscolor),
             });
         });
         return colors;
+    },
+
+    /**
+     * @param  {String | Null} name
+     * @returns {String | Null}
+     */
+    cleanName (name) {
+        if (name !== null) {
+            name = name.replace(/\sCopy(\s\d+)?/, '');
+        }
+        return name;
     }
 
 }

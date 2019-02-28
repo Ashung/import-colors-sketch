@@ -1,12 +1,11 @@
-import { basename } from 'path';
+import color from './color';
 
 /**
  * Read Apple CLR file
  * @param  {String} filePath
- * @returns {NSColorList}
+ * @returns {Array}
  */
 export default function(filePath) {
-    let name = basename(filePath, '.clr');
-    let colors = NSColorList.alloc().initWithName_fromFile(name, filePath);
-    return colors;
+    let colorList = NSColorList.alloc().initWithName_fromFile(null, filePath);
+    return color.toArray(colorList);
 }

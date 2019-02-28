@@ -1,6 +1,5 @@
-import { UI as ui } from 'sketch';
-import { Buffer as buffer } from 'buffer';
-import { basename } from 'path';
+import { UI } from 'sketch';
+import { Buffer } from 'buffer';
 import { readFileSync } from '@skpm/fs';
 import color from './color';
 
@@ -10,24 +9,22 @@ import color from './color';
  * https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/#50577411_pgfId-1055819
  * http://www.nomodes.com/aco.html
  * @param  {String} filePath
- * @returns {NSColorList}
+ * @returns {Array} [ {name, color} ]
  */
 export default function(filePath) {
 
     let colorContents = readFileSync(filePath);
-    let colorBuffer = buffer.from(colorContents);
+    let colorBuffer = Buffer.from(colorContents);
 
     if (colorBuffer.length < 4) {
-        ui.message('Error: Not a Adobe color swatch (ACO) file.');
+        UI.message('Error: Not a Adobe color swatch (ACO) file.');
         return;
     }
 
     let version = colorBuffer.slice(0, 2).readUInt16BE(0);
     let count = colorBuffer.slice(2, 4).readUInt16BE(0);
 
-    let name = basename(filePath, '.aco');
-    let colors = NSColorList.alloc().initWithName(name);
-    let keyCount = {};
+    let colors = [];
 
     // version 1
     let i;
@@ -40,8 +37,11 @@ export default function(filePath) {
             let y = colorBuffer.slice(i + 6, i + 8).readUInt16BE(0);
             let z = colorBuffer.slice(i + 8, i + 10).readUInt16BE(0);
             let nscolor = color.colorFromAco(colorSpace, w, x, y, z);
-            let colorName = color.toHexValue(nscolor);
-            color.addColorToList(nscolor, colorName, colors, keyCount);
+            let hexValue = color.toHexValue(nscolor);
+            colors.push({
+                name: null,
+                color: hexValue
+            });
             i += 10;
         }
     }
@@ -72,7 +72,11 @@ export default function(filePath) {
                 colorName += String.fromCodePoint(colorBuffer.slice(i + 14 + j, i + 16 + j).readUInt16BE(0));
             }
             let nscolor = color.colorFromAco(colorSpace, w, x, y, z);
-            color.addColorToList(nscolor, colorName, colors, keyCount);
+            let hexValue = color.toHexValue(nscolor);
+            colors.push({
+                name: colorName,
+                color: hexValue
+            });
             i += 14 + nameLength * 2;
         }
     }

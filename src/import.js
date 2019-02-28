@@ -4,11 +4,15 @@ import sketch from 'sketch/dom';
 import { extname, basename } from 'path';
 import os from 'os';
 import dialog from '@skpm/dialog';
+import { existsSync, mkdirSync, readdirSync, unlinkSync } from '@skpm/fs';
 import color from './color';
 import clr2colors from './clr-to-colors';
 import gpl2colors from './gpl-to-colors';
 import aco2colors from './aco-to-colors';
 import ase2colors from './ase-to-colors';
+import sketchpreset2colors from './sketchpreset-to-colors';
+import sketchpalette2colors from './sketchpalette-to-colors';
+import sketch2colors from './sketch-to-colors';
 
 export default function(context) {
 
@@ -17,7 +21,8 @@ export default function(context) {
             { name: 'Apple Color Picker Palette', extensions: [ 'clr' ] },
             { name: 'Adobe Color Swatch', extensions: [ 'aco' ] },
             { name: 'Adobe Swatch Exchange', extensions: [ 'ase' ] },
-            { name: 'GIMP Palette', extensions: [ 'gpl' ] }
+            { name: 'GIMP Palette', extensions: [ 'gpl' ] },
+            { name: 'Sketch', extensions: [ 'sketchpreset', 'sketchpalette', 'sketch' ] }
         ],
         properties: [ 'openFile' ]
     }, (filePaths) => {
@@ -34,12 +39,23 @@ export default function(context) {
             colors = ase2colors(filePath);
         } else if (fileType === '.gpl') {
             colors = gpl2colors(filePath);
+        } else if (fileType === '.sketchpreset') {
+            colors = sketchpreset2colors(filePath);
+        } else if (fileType === '.sketchpalette') {
+            colors = sketchpalette2colors(filePath);
+        } else if (fileType === '.sketch') {
+            colors = sketch2colors(filePath);
+        }
+
+        if (colors.length === 0) {
+            UI.message('No colors.');
+            return;
         }
 
         let identifier = String(context.command.identifier());
         if (identifier === 'import-colors-to-document' || identifier === 'import-colors-to-global') {
 
-            let document = Document.getSelectedDocument();
+            let document = sketch.getSelectedDocument();
             let colorAssets;
             if (identifier === 'import-colors-to-document') {
                 colorAssets = document.colors;
@@ -84,17 +100,17 @@ export default function(context) {
 
             if (doAddColorAssets) {
                 if (identifier === 'import-colors-to-document') {
-                    color.toObject(colors).items.forEach(item => {
-                        let newName = item.name.replace(/\sCopy(\s\d+)?/, '');
-                        colorAssets.push({
+                    colors.forEach(item => {
+                        let newName = color.cleanName(item.name);
+                        document.colors.push({
                             name: newName,
                             color: item.color
                         });
                     });
                     UI.message('Colors have imported to document colors.');
                 } else {
-                    color.toObject(colors).items.forEach(item => {
-                        let newName = item.name.replace(/\sCopy(\s\d+)?/, '');
+                    colors.forEach(item => {
+                        let newName = color.cleanName(item.name);
                         let colorAsset = color.colorAsset(newName, item.color);
                         assetCollection.addColorAsset(colorAsset);
                     });
@@ -112,7 +128,8 @@ export default function(context) {
                     ]
                 },
                 (filePath) => {
-                    colors.writeToFile(filePath);
+                    let colorList = color.colorListFromArray(colors);
+                    colorList.writeToFile(filePath);
                     UI.message('Colors have convert to .clr file.');
                 }
             );
@@ -120,7 +137,13 @@ export default function(context) {
 
         else if (identifier === 'import-colors-as-library') {
 
-            let libraryPath = os.homedir() + '/Library/Application Support/com.bohemiancoding.sketch3/Libraries/' + fileName.replace(/\.\w+$/i, '.sketch');
+            let libraryFolder = os.homedir() + '/Library/Application Support/com.bohemiancoding.sketch3/Plugins/import-colors-libraries/';
+            let libraryPath = libraryFolder + fileName.replace(/\.\w+$/i, '.sketch');
+
+            if (!existsSync(libraryFolder)) {
+                mkdirSync(libraryFolder);
+            }
+
             let msDocument = MSDocument.alloc().init();
             let document = Document.fromNative(msDocument);
 
@@ -139,10 +162,25 @@ export default function(context) {
                 }
             });
 
-            color.toObject(colors).items.forEach((item, index) => {
+            // Background
+            let background = new ShapePath({
+                name: 'background',
+                parent: artboard,
+                frame: new Rectangle(0, 0, 200, 160)
+            });
+            let base64 = 'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAHVJREFUWAnt07ENwCAMRFGTlbz/BvZMkJL+O1KK7wqKs9DTsapqx+Bk5uC2iGd02wfLfCBFVVBBKkDzdlBBKkDzdlBBKkDzdlBBKkDza79Dl9z57r6v+OwnoYQKKkgFaN4OKkgFaN4OKkgFaN4OKkgFaP73HTyNbwquT+qlgwAAAABJRU5ErkJggg==';
+            let imageData = NSData.alloc().initWithBase64EncodedString_options(base64, NSDataBase64DecodingIgnoreUnknownCharacters);
+            let nsImage = NSImage.alloc().initWithData(imageData);
+            let backgroundImage = MSImageData.alloc().initWithImage(nsImage);
+            background.sketchObject.style().addStylePartOfType(0);
+            background.sketchObject.style().fills().firstObject().setFillType(4);
+            background.sketchObject.style().fills().firstObject().setImage(backgroundImage);
+            background.sketchObject.style().fills().firstObject().setPatternFillType(0);
+
+            colors.forEach((item, index) => {
                 
                 // Add colors
-                let newName = item.name.replace(/\sCopy(\s\d+)?/, '');
+                let newName = color.cleanName(item.name);
                 document.colors.push({
                     name: newName,
                     color: item.color
@@ -187,6 +225,24 @@ export default function(context) {
                     UI.message('Error: ' + error.message);
                 } else {
                     Library.getLibraryForDocumentAtPath(libraryPath);
+
+                    // Remove library files that remove from Libraries Preferences
+                    let allLibraries = sketch.getLibraries().map(item => {
+                        return String(item.sketchObject.locationOnDisk().path());
+                    });
+        
+                    let colorLibraryFiles = readdirSync(libraryFolder).filter(item => {
+                        return extname(item) === '.sketch';
+                    }).map(item => {
+                        return libraryFolder + item;
+                    });
+        
+                    colorLibraryFiles.forEach(item => {
+                        if (!allLibraries.includes(item)) {
+                            unlinkSync(item);
+                        }
+                    });
+
                     UI.message('Colors have imported as a library.');
                 }
             });

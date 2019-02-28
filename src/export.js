@@ -1,13 +1,11 @@
 import { UI } from 'sketch';
 import sketch from 'sketch/dom';
-import { basename } from 'path';
-import { Document } from 'sketch/dom';
 import dialog from '@skpm/dialog';
 import color from './color';
 
 export default function(context) {
 
-    let document = Document.getSelectedDocument();
+    let document = sketch.getSelectedDocument();
     let colors;
 
     let identifier = String(context.command.identifier());
@@ -30,14 +28,7 @@ export default function(context) {
             ]
         },
         (filePath) => {
-            let name = basename(filePath, '.clr');
-            let colorList = NSColorList.alloc().initWithName(name);
-            let keyCount = {};
-            colors.forEach(colorAsset => {
-                let name = colorAsset.name || colorAsset.color.toUpperCase();
-                let nscolor = colorAsset.sketchObject.color().NSColorWithColorSpace(document.sketchObject.colorSpace());
-                color.addColorToList(nscolor, name, colorList, keyCount);
-            });
+            let colorList = color.colorListFromArray(colors);
             colorList.writeToFile(filePath);
             UI.message('Colors save to "' + filePath + '".');
         }
