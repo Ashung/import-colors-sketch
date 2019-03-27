@@ -1,5 +1,5 @@
 import { UI } from 'sketch';
-import { Document, Artboard, ShapePath, Text, Rectangle, Library } from 'sketch/dom';
+import { Document, Artboard, ShapePath, Text, Rectangle, Library, Style } from 'sketch/dom';
 import sketch from 'sketch/dom';
 import { extname, basename } from 'path';
 import os from 'os';
@@ -166,16 +166,19 @@ export default function(context) {
             let background = new ShapePath({
                 name: 'background',
                 parent: artboard,
-                frame: new Rectangle(0, 0, 200, 160)
+                frame: new Rectangle(0, 0, 200, 160),
+                style: {
+                    fills: [{
+                        fill: 'Pattern',
+                        pattern: {
+                            patternType: Style.PatternFillType.Tile,
+                            image: {
+                                base64: 'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAHVJREFUWAnt07ENwCAMRFGTlbz/BvZMkJL+O1KK7wqKs9DTsapqx+Bk5uC2iGd02wfLfCBFVVBBKkDzdlBBKkDzdlBBKkDzdlBBKkDza79Dl9z57r6v+OwnoYQKKkgFaN4OKkgFaN4OKkgFaN4OKkgFaP73HTyNbwquT+qlgwAAAABJRU5ErkJggg=='
+                            }
+                        }
+                    }]
+                }
             });
-            let base64 = 'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAHVJREFUWAnt07ENwCAMRFGTlbz/BvZMkJL+O1KK7wqKs9DTsapqx+Bk5uC2iGd02wfLfCBFVVBBKkDzdlBBKkDzdlBBKkDzdlBBKkDza79Dl9z57r6v+OwnoYQKKkgFaN4OKkgFaN4OKkgFaN4OKkgFaP73HTyNbwquT+qlgwAAAABJRU5ErkJggg==';
-            let imageData = NSData.alloc().initWithBase64EncodedString_options(base64, NSDataBase64DecodingIgnoreUnknownCharacters);
-            let nsImage = NSImage.alloc().initWithData(imageData);
-            let backgroundImage = MSImageData.alloc().initWithImage(nsImage);
-            background.sketchObject.style().addStylePartOfType(0);
-            background.sketchObject.style().fills().firstObject().setFillType(4);
-            background.sketchObject.style().fills().firstObject().setImage(backgroundImage);
-            background.sketchObject.style().fills().firstObject().setPatternFillType(0);
 
             colors.forEach((item, index) => {
                 

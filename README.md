@@ -4,7 +4,7 @@ Import colors from swatches file to Sketch.  **(For Sketch 53+)**
 
 ## Installation
 
-- Download zip file from [latest release](https://github.com/Ashung/import-colors-sketch/releases/latest), unzip and double click on the .sketchplugin.
+- Download zip file from [latest release](https://github.com/Ashung/import-colors-sketch/releases/latest), unzip and double click on the ".sketchplugin" file.
 - Search "import colors" from [Sketch Runner](http://sketchrunner.com/).
 
 ## Features
