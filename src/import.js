@@ -47,7 +47,11 @@ export default function(context) {
             colors = sketch2colors(filePath);
         }
 
-        if (colors.length === 0) {
+        if (colors === undefined) {
+            return;
+        }
+
+        if (Array.isArray(colors) && colors.length === 0) {
             UI.message('No colors.');
             return;
         }
@@ -60,7 +64,11 @@ export default function(context) {
             if (identifier === 'import-colors-to-document') {
                 colorAssets = document.colors;
             } else {
-                colorAssets = sketch.getGlobalColors();
+                if (sketch.version.sketch >= 54) {
+                    colorAssets = sketch.globalAssets.colors;
+                } else {
+                    colorAssets = sketch.getGlobalColors();
+                }
             }
 
             let doRemoveAllColorAssets = false;

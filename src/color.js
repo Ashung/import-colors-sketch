@@ -171,11 +171,16 @@ export default {
      * @returns {String} [0-9A-F]{6|8}
      */
     toHexValue (nscolor) {
-        let color = MSColor.colorWithNSColor(nscolor);
-        if (color.alphaComponent === 1) {
+        let color;
+        if (String(nscolor.class()) === "MSColor") {
+            color = nscolor;
+        } else {
+            color = MSColor.colorWithNSColor(nscolor);
+        }
+        if (color.alpha() === 1) {
             return '#' + String(color.immutableModelObject().hexValue());
         } else {
-            return '#' + String(color.immutableModelObject().hexValue()) + this.floatToHex(nscolor.alphaComponent());
+            return '#' + String(color.immutableModelObject().hexValue()) + this.floatToHex(color.alpha());
         }
     },
 
