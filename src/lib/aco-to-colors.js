@@ -4,7 +4,7 @@ import { readFileSync } from '@skpm/fs';
 import color from './color';
 
 /**
- * Convert Adobe color swatch (ACO) file to NSColorList
+ * Convert Adobe color swatch (ACO) file to Array [{name, color}]
  * File format specification:
  * https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/#50577411_pgfId-1055819
  * http://www.nomodes.com/aco.html

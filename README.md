@@ -11,8 +11,8 @@ Import colors from swatches file to Sketch.  **(For Sketch 53+)**
 
 - Import Colors to Document / Global
 - Import Colors as Library
-- Export Document / Global Colors
-- Convert Colors to .clr File
+- Export Document / Global Colors to .txt or .clr file
+- Convert Colors to .txt or .clr File
 - Reset Global Colors
 
 ## Supported Formats
@@ -26,12 +26,12 @@ Import colors from swatches file to Sketch.  **(For Sketch 53+)**
 | Sketch Palette             | `.sketchpalette` | Sketch (old version)                |
 | Sketch Preset              | `.sketchpreset`  | Sketch <sup>3</sup>                 |
 | Sketch Document            | `.sketch`        | Sketch <sup>3</sup>                 |
+| Text File                  | `.txt`, `.text`  | Text Editor <sup>4</sup>            |
 
-*1, In Sketch run "View" - "Show Colors", select palette tab, then click the gear icon, to open .clr files.*
-
-*2, The color save in CMYK, LAB, Grayscale model from .aco or .ase file, maybe have diffrent hex value between Sketch and Photoshop.*
-
-*3, Only import document colors.*
+1. In Sketch run "View" - "Show Colors", select palette tab, then click the gear icon, to open .clr files.
+2. The color save in CMYK, LAB, Grayscale model from .aco or .ase file, maybe have different hex value between Sketch and Photoshop.
+3. Only import document colors.
+4. Save colors in each lines, like `red: #ff0000`, color support hex, CSS color name, 8-digit hex, rgb, rgba, hsl, hsla.
 
 ## License
 

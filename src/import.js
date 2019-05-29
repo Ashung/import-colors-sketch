@@ -4,15 +4,16 @@ import sketch from 'sketch/dom';
 import { extname, basename } from 'path';
 import os from 'os';
 import dialog from '@skpm/dialog';
-import { existsSync, mkdirSync, readdirSync, unlinkSync } from '@skpm/fs';
-import color from './color';
-import clr2colors from './clr-to-colors';
-import gpl2colors from './gpl-to-colors';
-import aco2colors from './aco-to-colors';
-import ase2colors from './ase-to-colors';
-import sketchpreset2colors from './sketchpreset-to-colors';
-import sketchpalette2colors from './sketchpalette-to-colors';
-import sketch2colors from './sketch-to-colors';
+import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from '@skpm/fs';
+import color from './lib/color';
+import clr2colors from './lib/clr-to-colors';
+import gpl2colors from './lib/gpl-to-colors';
+import aco2colors from './lib/aco-to-colors';
+import ase2colors from './lib/ase-to-colors';
+import sketchpreset2colors from './lib/sketchpreset-to-colors';
+import sketchpalette2colors from './lib/sketchpalette-to-colors';
+import sketch2colors from './lib/sketch-to-colors';
+import txt2colors from './lib/txt-to-colors';
 
 export default function(context) {
 
@@ -22,7 +23,8 @@ export default function(context) {
             { name: 'Adobe Color Swatch', extensions: [ 'aco' ] },
             { name: 'Adobe Swatch Exchange', extensions: [ 'ase' ] },
             { name: 'GIMP Palette', extensions: [ 'gpl' ] },
-            { name: 'Sketch', extensions: [ 'sketchpreset', 'sketchpalette', 'sketch' ] }
+            { name: 'Sketch', extensions: [ 'sketchpreset', 'sketchpalette', 'sketch' ] },
+            { name: 'Text File', extensions: [ 'txt', 'text' ] }
         ],
         properties: [ 'openFile' ]
     }, (filePaths) => {
@@ -45,6 +47,8 @@ export default function(context) {
             colors = sketchpalette2colors(filePath);
         } else if (fileType === '.sketch') {
             colors = sketch2colors(filePath);
+        } else if (fileType === '.txt' || fileType === '.text') {
+            colors = txt2colors(filePath);
         }
 
         if (colors === undefined) {
@@ -139,6 +143,21 @@ export default function(context) {
                     let colorList = color.colorListFromArray(colors);
                     colorList.writeToFile(filePath);
                     UI.message('Colors have convert to .clr file.');
+                }
+            );
+        }
+
+        else if (identifier === 'convert-colors-to-txt-file') {
+            dialog.showSaveDialog(
+                {
+                    filters: [
+                        { name: 'Text File', extensions: [ 'txt', 'text' ] }
+                    ]
+                },
+                (filePath) => {
+                    let text = color.toTextContent(colors);
+                    writeFileSync(filePath, text);
+                    UI.message('Colors have convert to .txt file.');
                 }
             );
         }

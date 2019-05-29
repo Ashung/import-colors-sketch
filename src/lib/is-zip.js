@@ -1,6 +1,11 @@
 import { Buffer } from 'buffer';
 import { readFileSync } from '@skpm/fs';
 
+/**
+ * Checking a file is a ZIP or not.
+ * @param  {String} filePath
+ * @returns {Boolean}
+ */
 export default function(filePath) {
     let contents = readFileSync(filePath);
     let buffer = Buffer.from(contents);

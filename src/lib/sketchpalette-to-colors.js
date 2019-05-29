@@ -2,6 +2,11 @@ import { readFileSync } from '@skpm/fs';
 import color from './color';
 import isJSONString from './is-json-string';
 
+/**
+ * Get colors from Sketch .sketchpalette file.
+ * @param  {String} filePath
+ * @returns {Array} [ {name, color} ]
+ */
 export default function(filePath) {
 
     let assetContent = readFileSync(filePath, 'utf-8');

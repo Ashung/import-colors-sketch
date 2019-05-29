@@ -4,10 +4,10 @@ import { readFileSync } from '@skpm/fs';
 import color from './color';
 
 /**
- * Convert GIMP palette file to NSColorList
+ * Convert GIMP palette file to Array [{name, color}]
  * http://www.selapa.net/swatches/colors/fileformats.php#gimp_gpl
  * @param  {String} filePath
- * @returns {Array}
+ * @returns {Array} [ {name, color} ]
  */
 export default function(filePath) {
 

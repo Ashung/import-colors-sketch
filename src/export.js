@@ -1,7 +1,8 @@
 import { UI } from 'sketch';
 import sketch from 'sketch/dom';
 import dialog from '@skpm/dialog';
-import color from './color';
+import { writeFileSync } from '@skpm/fs';
+import color from './lib/color';
 
 export default function(context) {
 
@@ -9,10 +10,10 @@ export default function(context) {
     let colors;
 
     let identifier = String(context.command.identifier());
-    if (identifier === 'export-document-colors') {
+    if (identifier === 'export-document-colors-to-clr-file' || identifier === 'export-document-colors-to-txt-file') {
         colors = document.colors;
     }
-    if (identifier === 'export-global-colors') {
+    if (identifier === 'export-global-colors-to-clr-file' || identifier === 'export-global-colors-to-txt-file') {
         colors = sketch.getGlobalColors();
     }
 
@@ -21,15 +22,27 @@ export default function(context) {
         return;
     }
 
+    let filter;
+    if (identifier === 'export-document-colors-to-clr-file' || identifier === 'export-global-colors-to-clr-file') {
+        filter = { name: 'Apple Color Picker Palette', extensions: [ 'clr' ] }
+    }
+    if (identifier === 'export-document-colors-to-txt-file' || identifier === 'export-global-colors-to-txt-file') {
+        filter = { name: 'Text File', extensions: [ 'txt', 'text' ] }
+    }
+
     dialog.showSaveDialog(
         {
-            filters: [
-                { name: 'Apple Color Picker Palette', extensions: [ 'clr' ] }
-            ]
+            filters: [filter]
         },
         (filePath) => {
-            let colorList = color.colorListFromArray(colors);
-            colorList.writeToFile(filePath);
+            if (identifier === 'export-document-colors-to-clr-file' || identifier === 'export-global-colors-to-clr-file') {
+                let colorList = color.colorListFromArray(colors);
+                colorList.writeToFile(filePath);
+            }
+            if (identifier === 'export-document-colors-to-txt-file' || identifier === 'export-global-colors-to-txt-file') {
+                let text = color.toTextContent(colors);
+                writeFileSync(filePath, text);
+            }
             UI.message('Colors save to "' + filePath + '".');
         }
     );

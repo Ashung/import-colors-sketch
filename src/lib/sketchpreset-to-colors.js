@@ -6,6 +6,11 @@ import sketch from 'sketch/dom';
 import { UI } from 'sketch';
 import { toArray } from 'util';
 
+/**
+ * Get colors from Sketch .sketchpreset file.
+ * @param  {String} filePath
+ * @returns {Array} [ {name, color} ]
+ */
 export default function(filePath) {
 
     let assetContent = readFileSync(filePath, 'utf-8');

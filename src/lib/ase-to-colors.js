@@ -4,11 +4,11 @@ import { readFileSync } from '@skpm/fs';
 import color from './color';
 
 /**
- * Convert Adobe Swatch Exchange (ASE) file to NSColorList
+ * Convert Adobe Swatch Exchange (ASE) file to Array [{name, color}]
  * File format specification:
  * http://www.selapa.net/swatches/colors/fileformats.php#adobe_ase
  * @param  {String} filePath
- * @returns {Array}
+ * @returns {Array} [ {name, color} ]
  */
 export default function(filePath) {
 

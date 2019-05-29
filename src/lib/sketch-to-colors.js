@@ -1,6 +1,11 @@
 import { UI } from 'sketch';
 import { Document } from 'sketch/dom';
 
+/**
+ * Get colors from Sketch file.
+ * @param  {String} filePath
+ * @returns {Array} [ {name, color} ]
+ */
 export default function(filePath) {
 
     // Read data from sketch file.

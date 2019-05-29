@@ -1,6 +1,6 @@
 import { UI } from 'sketch';
-import color from "./color";
-import sketchpreset2colors from './sketchpreset-to-colors';
+import color from "./lib/color";
+import sketchpreset2colors from './lib/sketchpreset-to-colors';
 
 export default function(context) {
 

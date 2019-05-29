@@ -20,7 +20,7 @@
     "postinstall": "npm run build && skpm-link"
   },
   "devDependencies": {
-    "@skpm/builder": "^0.5.11"
+    "@skpm/builder": "^0.7.0"
   },
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
   "author": "Ashung <ashung.hung@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@skpm/dialog": "^0.2.5",
+    "@skpm/dialog": "^0.2.6",
     "@skpm/fs": "^0.2.4"
   }
 }
