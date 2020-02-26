@@ -21,6 +21,7 @@ Import colors from swatches file to Sketch.  **(For Sketch 53+)**
 | -------------------------- | ---------------- | ----------------------------------- |
 | Apple Color Picker Palette | `.clr`           | macOS Color Picker <sup>1</sup>     |
 | Adobe Color Swatch         | `.aco`           | Photoshop <sup>2</sup>              |
+| Adobe Color Table          | `.act`           | Photoshop <sup>2</sup>              |
 | Adobe Swatch Exchange      | `.ase`           | Photoshop, Illustrator <sup>2</sup> |
 | GIMP Palette               | `.gpl`           | GIMP, Inkscape                      |
 | Sketch Palette             | `.sketchpalette` | Sketch (old version)                |

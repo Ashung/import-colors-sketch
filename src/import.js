@@ -9,6 +9,7 @@ import color from './lib/color';
 import clr2colors from './lib/clr-to-colors';
 import gpl2colors from './lib/gpl-to-colors';
 import aco2colors from './lib/aco-to-colors';
+import act2colors from './lib/act-to-colors';
 import ase2colors from './lib/ase-to-colors';
 import sketchpreset2colors from './lib/sketchpreset-to-colors';
 import sketchpalette2colors from './lib/sketchpalette-to-colors';
@@ -21,6 +22,7 @@ export default function(context) {
         filters: [
             { name: 'Apple Color Picker Palette', extensions: [ 'clr' ] },
             { name: 'Adobe Color Swatch', extensions: [ 'aco' ] },
+            { name: 'Adobe Color Table', extensions: [ 'act' ] },
             { name: 'Adobe Swatch Exchange', extensions: [ 'ase' ] },
             { name: 'GIMP Palette', extensions: [ 'gpl' ] },
             { name: 'Sketch', extensions: [ 'sketchpreset', 'sketchpalette', 'sketch' ] },
@@ -37,6 +39,8 @@ export default function(context) {
             colors = clr2colors(filePath);
         } else if (fileType === '.aco') {
             colors = aco2colors(filePath);
+          } else if (fileType === '.act') {
+            colors = act2colors(filePath);
         } else if (fileType === '.ase') {
             colors = ase2colors(filePath);
         } else if (fileType === '.gpl') {
@@ -130,8 +134,8 @@ export default function(context) {
                 }
             }
 
-        } 
-        
+        }
+
         else if (identifier === 'convert-colors-to-clr-file') {
             dialog.showSaveDialog(
                 {
@@ -208,14 +212,14 @@ export default function(context) {
             });
 
             colors.forEach((item, index) => {
-                
+
                 // Add colors
                 let newName = color.cleanName(item.name);
                 document.colors.push({
                     name: newName,
                     color: item.color
                 });
-                
+
                 // Add layers 5 x 4
                 if (index < 20) {
                     let x = index % 5;
@@ -224,7 +228,7 @@ export default function(context) {
                         name: 'shape',
                         parent: artboard,
                         frame: new Rectangle(x * 40, y * 40, 40, 40),
-                        style: { 
+                        style: {
                             fills: [ { color: item.color } ]
                         }
                     });
@@ -260,13 +264,13 @@ export default function(context) {
                     let allLibraries = sketch.getLibraries().map(item => {
                         return String(item.sketchObject.locationOnDisk().path());
                     });
-        
+
                     let colorLibraryFiles = readdirSync(libraryFolder).filter(item => {
                         return extname(item) === '.sketch';
                     }).map(item => {
                         return libraryFolder + item;
                     });
-        
+
                     colorLibraryFiles.forEach(item => {
                         if (!allLibraries.includes(item)) {
                             unlinkSync(item);
