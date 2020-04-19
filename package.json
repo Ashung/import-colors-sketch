@@ -30,6 +30,6 @@
   "license": "MIT",
   "dependencies": {
     "@skpm/dialog": "^0.2.6",
-    "@skpm/fs": "^0.2.4"
+    "@skpm/fs": "^0.2.5"
   }
 }

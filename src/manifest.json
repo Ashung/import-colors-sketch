@@ -49,6 +49,11 @@
             "script": "./export.js"
         },
         {
+            "name": "Remove All Document Colors",
+            "identifier": "remove-all-document-colors",
+            "script": "./reset.js"
+        },
+        {
             "name": "Reset Global Colors",
             "identifier": "reset-global-colors",
             "script": "./reset.js"
@@ -69,6 +74,7 @@
             "convert-colors-to-clr-file",
             "convert-colors-to-txt-file",
             "-",
+            "remove-all-document-colors",
             "reset-global-colors"
         ]
     },

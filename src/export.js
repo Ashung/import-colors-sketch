@@ -9,7 +9,7 @@ export default function(context) {
     let document = sketch.getSelectedDocument();
     let colors;
 
-    let identifier = String(context.command.identifier());
+    const identifier = String(__command.identifier());
     if (identifier === 'export-document-colors-to-clr-file' || identifier === 'export-document-colors-to-txt-file') {
         colors = document.colors;
     }

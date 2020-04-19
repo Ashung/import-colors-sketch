@@ -64,7 +64,7 @@ export default function(context) {
             return;
         }
 
-        let identifier = String(context.command.identifier());
+        const identifier = String(__command.identifier());
         if (identifier === 'import-colors-to-document' || identifier === 'import-colors-to-global') {
 
             let document = sketch.getSelectedDocument();

@@ -273,6 +273,10 @@ export default {
         G = G > 0.0031308 ? 1.055 * Math.pow(G, 1 / 2.4) - 0.055 : 12.92 * G;
         B = B > 0.0031308 ? 1.055 * Math.pow(B, 1 / 2.4) - 0.055 : 12.92 * B;
 
+        R = Math.min(Math.max(0, R), 1);
+        G = Math.min(Math.max(0, G), 1);
+        b = Math.min(Math.max(0, B), 1);
+
         return NSColor.colorWithRed_green_blue_alpha(R, G, B, alpha);
     },
 
