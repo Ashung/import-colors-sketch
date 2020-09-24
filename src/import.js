@@ -68,72 +68,79 @@ export default function(context) {
         if (identifier === 'import-colors-to-document' || identifier === 'import-colors-to-global') {
 
             let document = sketch.getSelectedDocument();
-            let colorAssets;
-            if (identifier === 'import-colors-to-document') {
-                colorAssets = document.colors;
+            
+            // TODO： Sketch 69 
+            if (sketch.version.sketch >= 69) {
+
             } else {
-                if (sketch.version.sketch >= 54) {
-                    colorAssets = sketch.globalAssets.colors;
+                
+                let colorAssets;
+                if (identifier === 'import-colors-to-document') {
+                    colorAssets = document.colors;
                 } else {
-                    colorAssets = sketch.getGlobalColors();
-                }
-            }
-
-            let doRemoveAllColorAssets = false;
-            let doAddColorAssets = false;
-
-            if (colorAssets.length === 0) {
-                doAddColorAssets = true;
-            } else {
-                dialog.showMessageBox(
-                    {
-                        type: 'info',
-                        buttons: ['OK', 'Cancel', 'Append'],
-                        message: 'Replace all document colors with colors from "' + fileName + '".'
-                    },
-                    ({ response, checkboxChecked }) => {
-                        if (response === 0) {
-                            doRemoveAllColorAssets = true;
-                            doAddColorAssets = true;
-                        } else if (response === 1) {
-                            return null;
-                        } else if (response === 2) {
-                            doAddColorAssets = true;
-                        }
+                    if (sketch.version.sketch >= 54) {
+                        colorAssets = sketch.globalAssets.colors;
+                    } else {
+                        colorAssets = sketch.getGlobalColors();
                     }
-                );
-            }
-
-            let assetCollection;
-            if (doRemoveAllColorAssets) {
-                if (identifier === 'import-colors-to-document') {
-                    assetCollection = document._getMSDocumentData().assets();
-                } else {
-                    assetCollection = MSPersistentAssetCollection.sharedGlobalAssets();
                 }
-                assetCollection.removeAllColorAssets();
-            }
 
-            if (doAddColorAssets) {
-                if (identifier === 'import-colors-to-document') {
-                    colors.forEach(item => {
-                        let newName = color.cleanName(item.name);
-                        document.colors.push({
-                            name: newName,
-                            color: item.color
+                let doRemoveAllColorAssets = false;
+                let doAddColorAssets = false;
+
+                if (colorAssets.length === 0) {
+                    doAddColorAssets = true;
+                } else {
+                    dialog.showMessageBox(
+                        {
+                            type: 'info',
+                            buttons: ['OK', 'Cancel', 'Append'],
+                            message: 'Replace all document colors with colors from "' + fileName + '".'
+                        },
+                        ({ response, checkboxChecked }) => {
+                            if (response === 0) {
+                                doRemoveAllColorAssets = true;
+                                doAddColorAssets = true;
+                            } else if (response === 1) {
+                                return null;
+                            } else if (response === 2) {
+                                doAddColorAssets = true;
+                            }
+                        }
+                    );
+                }
+
+                let assetCollection;
+                if (doRemoveAllColorAssets) {
+                    if (identifier === 'import-colors-to-document') {
+                        assetCollection = document._getMSDocumentData().assets();
+                    } else {
+                        assetCollection = MSPersistentAssetCollection.sharedGlobalAssets();
+                    }
+                    assetCollection.removeAllColorAssets();
+                }
+
+                if (doAddColorAssets) {
+                    if (identifier === 'import-colors-to-document') {
+                        colors.forEach(item => {
+                            let newName = color.cleanName(item.name);
+                            document.colors.push({
+                                name: newName,
+                                color: item.color
+                            });
                         });
-                    });
-                    UI.message('Colors have imported to document colors.');
-                } else {
-                    colors.forEach(item => {
-                        let newName = color.cleanName(item.name);
-                        let colorAsset = color.colorAsset(newName, item.color);
-                        assetCollection.addColorAsset(colorAsset);
-                    });
-                    UI.message('Colors have imported to global colors.');
+                        UI.message('Colors have imported to document colors.');
+                    } else {
+                        colors.forEach(item => {
+                            let newName = color.cleanName(item.name);
+                            let colorAsset = color.colorAsset(newName, item.color);
+                            assetCollection.addColorAsset(colorAsset);
+                        });
+                        UI.message('Colors have imported to global colors.');
+                    }
                 }
-            }
 
+            }
         }
 
         else if (identifier === 'convert-colors-to-clr-file') {

@@ -9,11 +9,6 @@
             "script": "./import.js"
         },
         {
-            "name": "Import Colors to Global",
-            "identifier": "import-colors-to-global",
-            "script": "./import.js"
-        },
-        {
             "name": "Import Colors as Library",
             "identifier": "import-colors-as-library",
             "script": "./import.js"
@@ -34,28 +29,13 @@
             "script": "./export.js"
         },
         {
-            "name": "Export Global Colors to .clr File",
-            "identifier": "export-global-colors-to-clr-file",
-            "script": "./export.js"
-        },
-        {
             "name": "Export Document Colors to .txt File",
             "identifier": "export-document-colors-to-txt-file",
             "script": "./export.js"
         },
         {
-            "name": "Export Global Colors to .txt File",
-            "identifier": "export-global-colors-to-txt-file",
-            "script": "./export.js"
-        },
-        {
             "name": "Remove All Document Colors",
             "identifier": "remove-all-document-colors",
-            "script": "./reset.js"
-        },
-        {
-            "name": "Reset Global Colors",
-            "identifier": "reset-global-colors",
             "script": "./reset.js"
         }
     ],
@@ -63,19 +43,15 @@
         "title": "Import Colors",
         "items": [
             "import-colors-to-document",
-            "import-colors-to-global",
             "import-colors-as-library",
             "-",
             "export-document-colors-to-clr-file",
             "export-document-colors-to-txt-file",
-            "export-global-colors-to-clr-file",
-            "export-global-colors-to-txt-file",
             "-",
             "convert-colors-to-clr-file",
             "convert-colors-to-txt-file",
             "-",
-            "remove-all-document-colors",
-            "reset-global-colors"
+            "remove-all-document-colors"
         ]
     },
     "name": "Import Colors",
