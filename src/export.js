@@ -6,27 +6,21 @@ import color from './lib/color';
 
 export default function(context) {
 
-    let document = sketch.getSelectedDocument();
-    let colors;
-
+    const document = sketch.getSelectedDocument();
     const identifier = String(__command.identifier());
-    if (identifier === 'export-document-colors-to-clr-file' || identifier === 'export-document-colors-to-txt-file') {
-        colors = document.colors;
-    }
-    if (identifier === 'export-global-colors-to-clr-file' || identifier === 'export-global-colors-to-txt-file') {
-        colors = sketch.getGlobalColors();
-    }
-
+    let colors = document.swatches;
     if (colors.length === 0) {
-        UI.message('Document have no colors.');
+        UI.message('Document have no color variables.');
         return;
     }
 
+    // TODO: fix duplicated name
+
     let filter;
-    if (identifier === 'export-document-colors-to-clr-file' || identifier === 'export-global-colors-to-clr-file') {
+    if (identifier === 'export-color-variables-to-clr-file') {
         filter = { name: 'Apple Color Picker Palette', extensions: [ 'clr' ] }
     }
-    if (identifier === 'export-document-colors-to-txt-file' || identifier === 'export-global-colors-to-txt-file') {
+    if (identifier === 'export-color-variables-to-txt-file') {
         filter = { name: 'Text File', extensions: [ 'txt', 'text' ] }
     }
 
@@ -35,11 +29,11 @@ export default function(context) {
             filters: [filter]
         },
         (filePath) => {
-            if (identifier === 'export-document-colors-to-clr-file' || identifier === 'export-global-colors-to-clr-file') {
+            if (identifier === 'export-color-variables-to-clr-file') {
                 let colorList = color.colorListFromArray(colors);
                 colorList.writeToFile(filePath);
             }
-            if (identifier === 'export-document-colors-to-txt-file' || identifier === 'export-global-colors-to-txt-file') {
+            if (identifier === 'export-color-variables-to-txt-file') {
                 let text = color.toTextContent(colors);
                 writeFileSync(filePath, text);
             }

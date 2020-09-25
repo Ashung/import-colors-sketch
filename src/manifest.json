@@ -4,54 +4,47 @@
     "icon": "icon.png",
     "commands": [
         {
-            "name": "Import Colors to Document",
-            "identifier": "import-colors-to-document",
+            "name": "Import Colors to Color Variables",
+            "identifier": "import-color-variables-to-document",
             "script": "./import.js"
         },
         {
             "name": "Import Colors as Library",
-            "identifier": "import-colors-as-library",
+            "identifier": "import-color-variables-as-library",
             "script": "./import.js"
         },
         {
-            "name": "Convert Colors to .clr File",
-            "identifier": "convert-colors-to-clr-file",
+            "name": "Convert Color Variables to .clr File",
+            "identifier": "convert-color-variables-to-clr-file",
             "script": "./import.js"
         },
         {
-            "name": "Convert Colors to .txt File",
-            "identifier": "convert-colors-to-txt-file",
+            "name": "Convert Color Variables to .txt File",
+            "identifier": "convert-color-variables-to-txt-file",
             "script": "./import.js"
         },
         {
-            "name": "Export Document Colors to .clr File",
-            "identifier": "export-document-colors-to-clr-file",
+            "name": "Export Color Variables to .clr File",
+            "identifier": "export-color-variables-to-clr-file",
             "script": "./export.js"
         },
         {
-            "name": "Export Document Colors to .txt File",
-            "identifier": "export-document-colors-to-txt-file",
+            "name": "Export Color Variables to .txt File",
+            "identifier": "export-color-variables-to-txt-file",
             "script": "./export.js"
-        },
-        {
-            "name": "Remove All Document Colors",
-            "identifier": "remove-all-document-colors",
-            "script": "./reset.js"
         }
     ],
     "menu": {
         "title": "Import Colors",
         "items": [
-            "import-colors-to-document",
-            "import-colors-as-library",
+            "import-color-variables-to-document",
+            "import-color-variables-as-library",
             "-",
-            "export-document-colors-to-clr-file",
-            "export-document-colors-to-txt-file",
+            "export-color-variables-to-clr-file",
+            "export-color-variables-to-txt-file",
             "-",
-            "convert-colors-to-clr-file",
-            "convert-colors-to-txt-file",
-            "-",
-            "remove-all-document-colors"
+            "convert-color-variables-to-clr-file",
+            "convert-color-variables-to-txt-file"
         ]
     },
     "name": "Import Colors",

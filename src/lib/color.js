@@ -359,7 +359,7 @@ export default {
         let keyCount = {};
         colorsArray.forEach(item => {
             let nscolor = this.colorWithHex(item.color);
-            let colorName = item.name || this.toHexValue(nscolor);
+            let colorName = item.name || item.color;
             this.addColorToList(nscolor, colorName, colorList, keyCount);
         });
         return colorList;
