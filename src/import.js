@@ -18,6 +18,9 @@ import txt2colors from './lib/txt-to-colors';
 
 export default function(context) {
 
+    let document = sketch.getSelectedDocument();
+    const identifier = String(__command.identifier());
+
     dialog.showOpenDialog({
         filters: [
             { name: 'Apple Color Picker Palette', extensions: [ 'clr' ] },
@@ -64,10 +67,9 @@ export default function(context) {
             return;
         }
 
-        const identifier = String(__command.identifier());
-        if (identifier === 'import-colors-to-document' || identifier === 'import-colors-to-global') {
+        if (identifier === 'import-color-variables-to-document') {
 
-            let document = sketch.getSelectedDocument();
+            
             
             // TODO： Sketch 69 
             if (sketch.version.sketch >= 69) {
