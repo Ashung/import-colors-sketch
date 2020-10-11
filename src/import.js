@@ -171,7 +171,6 @@ export default function(context) {
                         return;
                     } else {
 
-                        // https://github.com/sketch-hq/SketchAPI/blob/release/69/Source/dom/models/__tests__/ImportableObject.test.js#L50-L88
                         let libraryFolder = os.homedir() + '/Library/Application Support/com.bohemiancoding.sketch3/Plugins/import-colors-libraries/';
                         let libraryPath = libraryFolder + fileName.replace(/\.\w+$/i, '.sketch');
 
@@ -204,13 +203,13 @@ export default function(context) {
 
                             // Add layers 4 x 4
                             if (index < 16) {
-                                let x = index % 4;
-                                let y = Math.floor(index / 4);
+                                let x = (index % 4) * 90 + 40;
+                                let y = Math.floor(index / 4) * 90 + 40;
                                 const layer = new ShapePath({
                                     name: colorName,
                                     parent: artboard,
                                     shapeType: ShapePath.ShapeType.Oval,
-                                    frame: new Rectangle(x * 40, y * 40, 50, 50),
+                                    frame: new Rectangle(x, y, 50, 50),
                                     style: {
                                         fills: [
                                             {
@@ -240,13 +239,11 @@ export default function(context) {
                                 let allLibraries = sketch.getLibraries().map(item => {
                                     return String(item.sketchObject.locationOnDisk().path());
                                 });
-
                                 let colorLibraryFiles = readdirSync(libraryFolder).filter(item => {
                                     return extname(item) === '.sketch';
                                 }).map(item => {
                                     return libraryFolder + item;
                                 });
-
                                 colorLibraryFiles.forEach(item => {
                                     if (!allLibraries.includes(item)) {
                                         unlinkSync(item);
