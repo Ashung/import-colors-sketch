@@ -19,9 +19,6 @@
     "start": "skpm-build --watch --run",
     "postinstall": "npm run build && skpm-link"
   },
-  "devDependencies": {
-    "@skpm/builder": "^1.3.1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Ashung/import-colors-sketch.git"
@@ -30,6 +27,9 @@
   "license": "MIT",
   "dependencies": {
     "@skpm/dialog": "^0.2.6",
-    "@skpm/fs": "^0.2.5"
+    "@skpm/fs": "^0.2.6"
+  },
+  "devDependencies": {
+    "@skpm/builder": "^0.7.7"
   }
 }

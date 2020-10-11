@@ -1,5 +1,5 @@
 import { UI } from 'sketch';
-import { Document, Artboard, ShapePath, Text, Rectangle, Library, Style } from 'sketch/dom';
+import { Document, Artboard, ShapePath, Text, Rectangle, Library, Style, Swatch } from 'sketch/dom';
 import sketch from 'sketch/dom';
 import { extname, basename } from 'path';
 import os from 'os';
@@ -18,7 +18,6 @@ import txt2colors from './lib/txt-to-colors';
 
 export default function(context) {
 
-    let document = sketch.getSelectedDocument();
     const identifier = String(__command.identifier());
 
     dialog.showOpenDialog({
@@ -67,82 +66,64 @@ export default function(context) {
             return;
         }
 
-        if (identifier === 'import-color-variables-to-document') {
+        if (identifier === 'import-colors-to-color-variables') {
 
-            
-            
-            // TODO： Sketch 69 
-            if (sketch.version.sketch >= 69) {
-
-            } else {
-                
-                let colorAssets;
-                if (identifier === 'import-colors-to-document') {
-                    colorAssets = document.colors;
-                } else {
-                    if (sketch.version.sketch >= 54) {
-                        colorAssets = sketch.globalAssets.colors;
-                    } else {
-                        colorAssets = sketch.getGlobalColors();
-                    }
-                }
-
-                let doRemoveAllColorAssets = false;
-                let doAddColorAssets = false;
-
-                if (colorAssets.length === 0) {
-                    doAddColorAssets = true;
-                } else {
-                    dialog.showMessageBox(
-                        {
-                            type: 'info',
-                            buttons: ['OK', 'Cancel', 'Append'],
-                            message: 'Replace all document colors with colors from "' + fileName + '".'
-                        },
-                        ({ response, checkboxChecked }) => {
-                            if (response === 0) {
-                                doRemoveAllColorAssets = true;
-                                doAddColorAssets = true;
-                            } else if (response === 1) {
-                                return null;
-                            } else if (response === 2) {
-                                doAddColorAssets = true;
-                            }
+            let document = sketch.getSelectedDocument();
+            let swatches = document.swatches;
+            if (swatches.length === 0) {
+                dialog.showMessageBox(
+                    {
+                        type: 'none',
+                        buttons: ['OK', 'Cancel'],
+                        message: 'Import colors from "' + fileName + '"?',
+                        checkboxLabel: 'Auto add numbers in front of Color Variables.',
+                        checkboxChecked: true
+                    },
+                    ({ response, checkboxChecked }) => {
+                        if (response === 0) {
+                            addColorVariables(checkboxChecked);
+                        } else {
+                            return;
                         }
-                    );
-                }
-
-                let assetCollection;
-                if (doRemoveAllColorAssets) {
-                    if (identifier === 'import-colors-to-document') {
-                        assetCollection = document._getMSDocumentData().assets();
-                    } else {
-                        assetCollection = MSPersistentAssetCollection.sharedGlobalAssets();
                     }
-                    assetCollection.removeAllColorAssets();
-                }
-
-                if (doAddColorAssets) {
-                    if (identifier === 'import-colors-to-document') {
-                        colors.forEach(item => {
-                            let newName = color.cleanName(item.name);
-                            document.colors.push({
-                                name: newName,
-                                color: item.color
-                            });
-                        });
-                        UI.message('Colors have imported to document colors.');
-                    } else {
-                        colors.forEach(item => {
-                            let newName = color.cleanName(item.name);
-                            let colorAsset = color.colorAsset(newName, item.color);
-                            assetCollection.addColorAsset(colorAsset);
-                        });
-                        UI.message('Colors have imported to global colors.');
+                );
+            } else {
+                dialog.showMessageBox(
+                    {
+                        type: 'none',
+                        buttons: ['OK', 'Cancel', 'Append'],
+                        message: 'Remove all existing color variables, before import colors from "' + fileName + '"?',
+                        checkboxLabel: 'Auto add numbers in front of Color Variables.',
+                        checkboxChecked: true
+                    },
+                    ({ response, checkboxChecked }) => {
+                        if (response === 0) {
+                            removeAllColorVariables();
+                            addColorVariables(checkboxChecked);
+                        } else if (response === 1) {
+                            return;
+                        } else if (response === 2) {
+                            addColorVariables(checkboxChecked);
+                        }
                     }
-                }
-
+                );
             }
+
+            function removeAllColorVariables() {
+                document.swatches = [];
+            }
+
+            function addColorVariables(addNumber) {
+                colors.forEach((item, index) => {
+                    const swatch = Swatch.from({
+                        name: (addNumber ? `${index + 1}. ` : '') + item.name,
+                        color: item.color
+                    });
+                    swatches.push(swatch);
+                });
+                UI.message(`Import ${colors.length} color variable${colors.length > 1 ? 's' : ''} to document.`);
+            }
+
         }
 
         else if (identifier === 'convert-colors-to-clr-file') {
@@ -177,118 +158,108 @@ export default function(context) {
 
         else if (identifier === 'import-colors-as-library') {
 
-            let libraryFolder = os.homedir() + '/Library/Application Support/com.bohemiancoding.sketch3/Plugins/import-colors-libraries/';
-            let libraryPath = libraryFolder + fileName.replace(/\.\w+$/i, '.sketch');
+            dialog.showMessageBox(
+                {
+                    type: 'none',
+                    buttons: ['OK', 'Cancel'],
+                    message: 'Import colors as library from "' + fileName + '"?',
+                    checkboxLabel: 'Auto add numbers in front of Color Variables.',
+                    checkboxChecked: true
+                },
+                ({ response, checkboxChecked }) => {
+                    if (response === 1) {
+                        return;
+                    } else {
 
-            if (!existsSync(libraryFolder)) {
-                mkdirSync(libraryFolder);
-            }
+                        // https://github.com/sketch-hq/SketchAPI/blob/release/69/Source/dom/models/__tests__/ImportableObject.test.js#L50-L88
+                        let libraryFolder = os.homedir() + '/Library/Application Support/com.bohemiancoding.sketch3/Plugins/import-colors-libraries/';
+                        let libraryPath = libraryFolder + fileName.replace(/\.\w+$/i, '.sketch');
 
-            let msDocument = MSDocument.alloc().init();
-            let document = Document.fromNative(msDocument);
+                        if (!existsSync(libraryFolder)) {
+                            mkdirSync(libraryFolder);
+                        }
 
-            // Page
-            document.pages[0].name = 'Library Preview';
+                        let msDocument = MSDocument.alloc().init();
+                        let document = Document.fromNative(msDocument);
 
-            // Add artboard
-            let artboard = new Artboard({
-                name: 'Library Preview',
-                parent: document.pages[0],
-                frame: new Rectangle(0, 0, 200, 160),
-                background: {
-                    enabled: true,
-                    includeInExport: true,
-                    color: '#000000'
-                }
-            });
+                        // Page
+                        document.pages[0].name = 'Library Preview';
 
-            // Background
-            let background = new ShapePath({
-                name: 'background',
-                parent: artboard,
-                frame: new Rectangle(0, 0, 200, 160),
-                style: {
-                    fills: [{
-                        fill: 'Pattern',
-                        pattern: {
-                            patternType: Style.PatternFillType.Tile,
-                            image: {
-                                base64: 'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAHVJREFUWAnt07ENwCAMRFGTlbz/BvZMkJL+O1KK7wqKs9DTsapqx+Bk5uC2iGd02wfLfCBFVVBBKkDzdlBBKkDzdlBBKkDzdlBBKkDza79Dl9z57r6v+OwnoYQKKkgFaN4OKkgFaN4OKkgFaN4OKkgFaP73HTyNbwquT+qlgwAAAABJRU5ErkJggg=='
+                        // Add artboard
+                        let artboard = new Artboard({
+                            name: 'Library Preview',
+                            parent: document.pages[0],
+                            frame: new Rectangle(0, 0, 400, 400)
+                        });
+
+                        colors.forEach((item, index) => {
+
+                            // Add colors
+                            const colorName = (checkboxChecked ? `${index + 1}. ` : '') + item.name;
+                            const swatch = Swatch.from({
+                                name: colorName,
+                                color: item.color
+                            });
+                            document.swatches.push(swatch);
+
+                            // Add layers 4 x 4
+                            if (index < 16) {
+                                let x = index % 4;
+                                let y = Math.floor(index / 4);
+                                const layer = new ShapePath({
+                                    name: colorName,
+                                    parent: artboard,
+                                    shapeType: ShapePath.ShapeType.Oval,
+                                    frame: new Rectangle(x * 40, y * 40, 50, 50),
+                                    style: {
+                                        fills: [
+                                            {
+                                                color: swatch.referencingColor
+                                            }
+                                        ],
+                                        borders: [
+                                            {
+                                                color: '#0000001A',
+                                                fillType: Style.FillType.Color,
+                                                position: Style.BorderPosition.Inside
+                                            }
+                                        ]
+                                    }
+                                });
                             }
-                        }
-                    }]
+
+                        });
+
+                        document.save(libraryPath, error => {
+                            if (error) {
+                                UI.message('Error: ' + error.message);
+                            } else {
+                                Library.getLibraryForDocumentAtPath(libraryPath);
+
+                                // Remove library files that remove from Libraries Preferences
+                                let allLibraries = sketch.getLibraries().map(item => {
+                                    return String(item.sketchObject.locationOnDisk().path());
+                                });
+
+                                let colorLibraryFiles = readdirSync(libraryFolder).filter(item => {
+                                    return extname(item) === '.sketch';
+                                }).map(item => {
+                                    return libraryFolder + item;
+                                });
+
+                                colorLibraryFiles.forEach(item => {
+                                    if (!allLibraries.includes(item)) {
+                                        unlinkSync(item);
+                                    }
+                                });
+
+                                UI.message('Colors have imported as a library.');
+                            }
+                        });
+
+                    }
                 }
-            });
-
-            colors.forEach((item, index) => {
-
-                // Add colors
-                let newName = color.cleanName(item.name);
-                document.colors.push({
-                    name: newName,
-                    color: item.color
-                });
-
-                // Add layers 5 x 4
-                if (index < 20) {
-                    let x = index % 5;
-                    let y = Math.floor(index / 5);
-                    let rectangleLayer = new ShapePath({
-                        name: 'shape',
-                        parent: artboard,
-                        frame: new Rectangle(x * 40, y * 40, 40, 40),
-                        style: {
-                            fills: [ { color: item.color } ]
-                        }
-                    });
-                }
-
-            });
-
-            // Add text
-            let text = new Text({
-                name: 'text',
-                text: fileName.replace(/\.\w+$/i, ''),
-                parent: artboard,
-                fixedWidth: true,
-                frame: new Rectangle(10, 10, 180, 140),
-                style: {
-                    textColor: '#ffffff',
-                    fontFamily: 'Futura',
-                    fontSize: 20,
-                    lineHeight: 40,
-                    alignment: 'center',
-                    verticalAlignment: 'center'
-                }
-            });
-            text.sketchObject.frame().setMidY(80);
-
-            document.save(libraryPath, error => {
-                if (error) {
-                    UI.message('Error: ' + error.message);
-                } else {
-                    Library.getLibraryForDocumentAtPath(libraryPath);
-
-                    // Remove library files that remove from Libraries Preferences
-                    let allLibraries = sketch.getLibraries().map(item => {
-                        return String(item.sketchObject.locationOnDisk().path());
-                    });
-
-                    let colorLibraryFiles = readdirSync(libraryFolder).filter(item => {
-                        return extname(item) === '.sketch';
-                    }).map(item => {
-                        return libraryFolder + item;
-                    });
-
-                    colorLibraryFiles.forEach(item => {
-                        if (!allLibraries.includes(item)) {
-                            unlinkSync(item);
-                        }
-                    });
-
-                    UI.message('Colors have imported as a library.');
-                }
-            });
+            );
 
         }
 

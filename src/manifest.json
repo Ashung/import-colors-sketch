@@ -5,22 +5,22 @@
     "commands": [
         {
             "name": "Import Colors to Color Variables",
-            "identifier": "import-color-variables-to-document",
+            "identifier": "import-colors-to-color-variables",
             "script": "./import.js"
         },
         {
             "name": "Import Colors as Library",
-            "identifier": "import-color-variables-as-library",
+            "identifier": "import-colors-as-library",
             "script": "./import.js"
         },
         {
-            "name": "Convert Color Variables to .clr File",
-            "identifier": "convert-color-variables-to-clr-file",
+            "name": "Convert Colors to .clr File",
+            "identifier": "convert-colors-to-clr-file",
             "script": "./import.js"
         },
         {
-            "name": "Convert Color Variables to .txt File",
-            "identifier": "convert-color-variables-to-txt-file",
+            "name": "Convert Colors to .txt File",
+            "identifier": "convert-colors-to-txt-file",
             "script": "./import.js"
         },
         {
@@ -37,14 +37,14 @@
     "menu": {
         "title": "Import Colors",
         "items": [
-            "import-color-variables-to-document",
-            "import-color-variables-as-library",
+            "import-colors-to-color-variables",
+            "import-colors-as-library",
+            "-",
+            "convert-colors-to-clr-file",
+            "convert-colors-to-txt-file",
             "-",
             "export-color-variables-to-clr-file",
-            "export-color-variables-to-txt-file",
-            "-",
-            "convert-color-variables-to-clr-file",
-            "convert-color-variables-to-txt-file"
+            "export-color-variables-to-txt-file"
         ]
     },
     "name": "Import Colors",
