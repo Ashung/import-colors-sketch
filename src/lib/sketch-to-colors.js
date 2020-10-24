@@ -9,8 +9,8 @@ import { Document } from 'sketch/dom';
 export default function(filePath) {
 
     // Read data from sketch file.
-    let error = MOPointer.alloc().init();
-    let msDocument = MSDocument.alloc().init();
+    const error = MOPointer.alloc().init();
+    const msDocument = MSDocument.alloc().init();
     msDocument.readFromURL_ofType_error(filePath, 'com.bohemiancoding.sketch.drawing', error);
 
     if (error.value() !== null) {
@@ -18,13 +18,24 @@ export default function(filePath) {
         return;
     }
 
-    let document = Document.fromNative(msDocument);
-    let colors = document.colors.map(item => {
-        return {
-            name: item.name,
-            color: item.color
-        };
-    });
+    const document = Document.fromNative(msDocument);
+
+    let colors;
+    if (document.swatches.length > 0) {
+        colors = document.swatches.map(item => {
+            return {
+                name: item.name,
+                color: item.color
+            };
+        });
+    } else {
+        colors = document.colors.map(item => {
+            return {
+                name: item.name,
+                color: item.color
+            };
+        });
+    }
 
     return colors;
 

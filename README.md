@@ -21,8 +21,9 @@ Import colors from swatches file to Sketch.  **(For Sketch 53+)**
 
 - Import Colors to Color Variables
 - Import Colors as Library
-- Export Color Variables to .txt or .clr file
+- Import Colors and Update Color Variables
 - Convert Color Variables to .txt or .clr File
+- Export Color Variables to .txt or .clr file
 
 ## Supported Formats
 

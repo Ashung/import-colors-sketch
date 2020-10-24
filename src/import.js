@@ -1,5 +1,5 @@
 import { UI } from 'sketch';
-import { Document, Artboard, ShapePath, Text, Rectangle, Library, Style, Swatch } from 'sketch/dom';
+import { Document, Artboard, ShapePath, Rectangle, Library, Style, Swatch } from 'sketch/dom';
 import sketch from 'sketch/dom';
 import { extname, basename } from 'path';
 import os from 'os';
@@ -149,7 +149,8 @@ export default function(context) {
                     ]
                 },
                 (filePath) => {
-                    let text = color.toTextContent(colors);
+                    let keyCount = {};
+                    let text = color.toTextContent(colors, keyCount);
                     writeFileSync(filePath, text);
                     UI.message('Colors have convert to .txt file.');
                 }
@@ -260,5 +261,29 @@ export default function(context) {
 
         }
 
+        else if (identifier === 'import-colors-and-update-color-variables') {
+            let document = sketch.getSelectedDocument();
+            let swatches = document.swatches;
+            let names = swatches.map(item => item.name);
+            let countNew = 0;
+            let countUpdate = 0;
+            colors.forEach(item => {
+                if (names.includes(item.name)) {
+                    let mscolor = color.mscolorWithHex(item.color);
+                    let swatch = swatches.find(_item => _item.name === item.name);
+                    swatch.sketchObject.updateWithColor(mscolor);
+                    let swatchContainer = document._getMSDocumentData().sharedSwatches();
+                    swatchContainer.updateReferencesToSwatch(swatch.sketchObject);
+                    countUpdate ++;
+                } else {
+                    swatches.push(Swatch.from({
+                        name: item.name,
+                        color: item.color
+                    }));
+                    countNew ++;
+                }
+                UI.message(`Add: ${countNew}, Update: ${countUpdate}.`);
+            });
+        }
     });
 }

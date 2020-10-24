@@ -14,6 +14,11 @@
             "script": "./import.js"
         },
         {
+            "name": "Import Colors and Update Color Variables",
+            "identifier": "import-colors-and-update-color-variables",
+            "script": "./import.js"
+        },
+        {
             "name": "Convert Colors to .clr File",
             "identifier": "convert-colors-to-clr-file",
             "script": "./import.js"
@@ -39,6 +44,7 @@
         "items": [
             "import-colors-to-color-variables",
             "import-colors-as-library",
+            "import-colors-and-update-color-variables",
             "-",
             "convert-colors-to-clr-file",
             "convert-colors-to-txt-file",

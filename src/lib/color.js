@@ -9,6 +9,14 @@ export default {
     },
 
     /**
+     * @param  {String} hexValue #[0-9A-F]{3,8}
+     * @returns {MSColor} MSColor
+     */
+    mscolorWithHex (hexValue) {
+        return MSImmutableColor.colorWithSVGString(hexValue).newMutableCounterpart();
+    },
+
+    /**
      * @param  {Number} r 0..255
      * @param  {Number} g 0..255
      * @param  {Number} b 0..255
@@ -336,17 +344,15 @@ export default {
      * @param  {Object} keyCount
      */
     addColorToList (nscolor, key, colorList, keyCount) {
-        if (keyCount[key]) {
+        if (!isNaN(keyCount[key])) {
             keyCount[key] ++;
         } else {
             keyCount[key] = 1;
         }
         if (keyCount[key] === 1) {
             colorList.setColor_forKey(nscolor, key);
-        } else if (keyCount[key] === 2) {
-            colorList.setColor_forKey(nscolor, key + ' Copy');
         } else {
-            colorList.setColor_forKey(nscolor, key + ' Copy ' + (keyCount[key] - 1));
+            colorList.setColor_forKey(nscolor, key + ' ' + keyCount[key]);
         }
     },
 
@@ -447,12 +453,28 @@ export default {
 
     /**
      * @param  {Array} colorArray [{name, color}]
+     * @param  {Object} keyCount
      * @returns {String} name: #FFFFFF
      */
-    toTextContent (colorArray) {
+    toTextContent (colorArray, keyCount) {
         let text = '';
         colorArray.forEach(item => {
-            text += item.name + ': ' + item.color + '\n';
+            let name = item.name;
+            let color = item.color;
+            if (!isNaN(keyCount[name])) {
+                keyCount[name] ++;
+            } else {
+                keyCount[name] = 1;
+            }
+            if (keyCount[name] === 1) {
+                name = item.name;
+            } else {
+                name += ' ' + keyCount[name];
+            }
+            if (/^#[0-9A-F]{6}FF$/i.test(item.color)) {
+                color = item.color.substr(0, 7);
+            }
+            text += name + ': ' + color + '\n';
         });
         return text;
     }

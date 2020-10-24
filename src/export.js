@@ -14,8 +14,6 @@ export default function(context) {
         return;
     }
 
-    // TODO: fix duplicated name
-
     let filter;
     if (identifier === 'export-color-variables-to-clr-file') {
         filter = { name: 'Apple Color Picker Palette', extensions: [ 'clr' ] }
@@ -34,7 +32,8 @@ export default function(context) {
                 colorList.writeToFile(filePath);
             }
             if (identifier === 'export-color-variables-to-txt-file') {
-                let text = color.toTextContent(colors);
+                let keyCount = {};
+                let text = color.toTextContent(colors, keyCount);
                 writeFileSync(filePath, text);
             }
             UI.message('Colors save to "' + filePath + '".');
