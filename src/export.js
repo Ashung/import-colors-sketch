@@ -1,14 +1,40 @@
 import { UI } from 'sketch';
 import sketch from 'sketch/dom';
+import { Swatch } from 'sketch/dom';
 import dialog from '@skpm/dialog';
 import { writeFileSync } from '@skpm/fs';
 import color from './lib/color';
+import { toArray } from 'util';
 
 export default function(context) {
 
     const document = sketch.getSelectedDocument();
     const identifier = String(__command.identifier());
-    let colors = document.swatches;
+
+    let colors;
+    dialog.showMessageBox(
+        {
+            type: 'none',
+            buttons: ['OK', 'Cancel'],
+            message: 'Export colors',
+            checkboxLabel: 'Include color variables from library.',
+            checkboxChecked: true
+        },
+        ({ response, checkboxChecked }) => {
+            if (response === 0) {
+                if (checkboxChecked) {
+                    colors = toArray(document._getMSDocumentData().allSwatches()).map(swatch => {
+                        return Swatch.fromNative(swatch);
+                    });
+                } else {
+                    colors = document.swatches;
+                }
+            } else {
+                return;
+            }
+        }
+    );
+    
     if (colors.length === 0) {
         UI.message('Document have no color variables.');
         return;

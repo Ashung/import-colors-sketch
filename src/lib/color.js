@@ -230,6 +230,8 @@ export default {
             let g = colors[name][1] / 255;
             let b = colors[name][2] / 255;
             return NSColor.colorWithRed_green_blue_alpha(r, g, b, 1);
+        } else {
+            return null;
         }
     },
 

@@ -30,7 +30,7 @@ export default function(filePath) {
             let colorValue = lineMatch[2];
             let hexValue;
             if (/^#[0-9a-f]{3,8}/i.test(colorValue)) {
-                hexValue = color.toHexValue(color.colorWithHex(colorValue));
+                hexValue = colorValue.match(/^#[0-9a-f]{3,8}/i)[0];
             } else if (/^rgb[a]?\(.*\)/i.test(colorValue)) {
                 let rgba = colorValue.match(/^rgb[a]?\((.*)\)/i)[1].split(/,\s?/);
                 let nsColor = color.colorWithRGBA(parseInt(rgba[0]) || 0, parseInt(rgba[1]) || 0, parseInt(rgba[2]) || 0, parseFloat(rgba[3]) || 1);
@@ -42,10 +42,12 @@ export default function(filePath) {
             } else if (color.colorWithName(colorValue)) {
                 hexValue = color.toHexValue(color.colorWithName(colorValue));
             }
-            colors.push({
-                name: colorName,
-                color: hexValue
-            });
+            if (hexValue) {
+                colors.push({
+                    name: colorName,
+                    color: hexValue
+                });
+            }
         }
     });
 
