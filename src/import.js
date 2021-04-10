@@ -55,6 +55,8 @@ export default function(context) {
             colors = sketch2colors(filePath);
         } else if (fileType === '.txt' || fileType === '.text') {
             colors = txt2colors(filePath);
+        } else {
+            UI.message('Unknown file format.');
         }
 
         if (colors === undefined) {
@@ -115,8 +117,12 @@ export default function(context) {
 
             function addColorVariables(addNumber) {
                 colors.forEach((item, index) => {
+                    let name = item.name;
+                    if (addNumber) {
+                        name = item.name.replace(/\/([^\/]*)$/, `/${index + 1}. $1`);
+                    }
                     const swatch = Swatch.from({
-                        name: (addNumber ? `${index + 1}. ` : '') + item.name,
+                        name,
                         color: item.color
                     });
                     swatches.push(swatch);

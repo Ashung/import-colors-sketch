@@ -5,6 +5,7 @@ import dialog from '@skpm/dialog';
 import { writeFileSync } from '@skpm/fs';
 import color from './lib/color';
 import { toArray } from 'util';
+import { extname } from 'path';
 
 export default function(context) {
 
@@ -18,7 +19,7 @@ export default function(context) {
             buttons: ['OK', 'Cancel'],
             message: 'Export colors',
             checkboxLabel: 'Include color variables from library.',
-            checkboxChecked: true
+            checkboxChecked: false
         },
         ({ response, checkboxChecked }) => {
             if (response === 0) {
@@ -54,10 +55,16 @@ export default function(context) {
         },
         (filePath) => {
             if (identifier === 'export-color-variables-to-clr-file') {
+                if (extname(filePath) === '') {
+                    filePath += '.clr';
+                }
                 let colorList = color.colorListFromArray(colors);
                 colorList.writeToFile(filePath);
             }
             if (identifier === 'export-color-variables-to-txt-file') {
+                if (extname(filePath) === '') {
+                    filePath += '.txt';
+                }
                 let keyCount = {};
                 let text = color.toTextContent(colors, keyCount);
                 writeFileSync(filePath, text);
