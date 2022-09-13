@@ -14,10 +14,10 @@
     ]
   },
   "scripts": {
-    "build": "skpm-build",
-    "watch": "skpm-build --watch",
-    "start": "skpm-build --watch --run",
-    "postinstall": "npm run build && skpm-link"
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && skpm-build",
+    "watch": "export NODE_OPTIONS=--openssl-legacy-provider && skpm-build --watch",
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider && skpm-build --watch --run",
+    "postinstall": "export NODE_OPTIONS=--openssl-legacy-provider && npm run build && skpm-link"
   },
   "repository": {
     "type": "git",

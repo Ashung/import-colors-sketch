@@ -52,6 +52,10 @@ export default function(context) {
         } else if (fileType === '.sketchpalette') {
             colors = sketchpalette2colors(filePath);
         } else if (fileType === '.sketch') {
+            if (sketch.getSelectedDocument().path === filePath) {
+                UI.message('The sketch file is current document.');
+                return;
+            }
             colors = sketch2colors(filePath);
         } else if (fileType === '.txt' || fileType === '.text') {
             colors = txt2colors(filePath);

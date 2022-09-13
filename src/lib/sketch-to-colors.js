@@ -1,3 +1,4 @@
+import sketch from 'sketch/dom';
 import { UI } from 'sketch';
 import { Document } from 'sketch/dom';
 
@@ -7,6 +8,10 @@ import { Document } from 'sketch/dom';
  * @returns {Array} [ {name, color} ]
  */
 export default function(filePath) {
+
+    if (sketch.version.sketch >= 92) {
+        filePath = NSURL.fileURLWithPath(filePath);
+    }
 
     // Read data from sketch file.
     const error = MOPointer.alloc().init();

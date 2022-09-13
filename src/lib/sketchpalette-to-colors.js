@@ -30,6 +30,5 @@ export default function(filePath) {
 
         return colors;
     }
-    
 
 }
