@@ -1,6 +1,6 @@
 {
   "name": "import-colors",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Import colors from swatches file to Sketch. (For Sketch 69+)",
   "engines": {
     "sketch": ">=3.0"
